@@ -1,0 +1,14 @@
+image:
+  repository: beelzekamibub/redisjava   # same repository the pipeline pushes to
+  tag: latest
+  pullPolicy: Never                     # the image is loaded into KIND with `kind load docker-image`
+
+service:
+  type: NodePort
+  port: 6379
+  nodePort: 30007
+
+# Optional read-only replica of the master above (reachable inside the cluster as redis-replica-service)
+replica:
+  enabled: false
+  replicas: 1

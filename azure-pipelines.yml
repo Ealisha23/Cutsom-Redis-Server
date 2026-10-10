@@ -1,0 +1,33 @@
+trigger:
+- master
+
+pool:
+  name: agent
+
+variables:
+  dockerHubRepository: 'beelzekamibub/redisjava'
+  tag: '$(Build.BuildId)'
+
+steps:
+# The Dockerfile runs the unit and integration tests while building the image
+# (mvn package without -DskipTests), so a failing test fails this step and nothing is pushed.
+- task: Docker@2
+  displayName: 'Build Redis Image (runs the tests)'
+  inputs:
+    containerRegistry: 'dockerhub'
+    repository: '$(dockerHubRepository)'
+    command: 'build'
+    Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+    buildContext: '$(Build.SourcesDirectory)'
+    tags: |
+      $(tag)
+      latest
+- task: Docker@2
+  displayName: 'Push Redis Image to DockerHub'
+  inputs:
+    containerRegistry: 'dockerhub'
+    repository: '$(dockerHubRepository)'
+    command: 'push'
+    tags: |
+      $(tag)
+      latest

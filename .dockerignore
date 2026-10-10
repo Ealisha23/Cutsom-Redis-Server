@@ -1,0 +1,7 @@
+.git
+target
+*.jar
+.idea
+dind
+kind
+redis-chart
